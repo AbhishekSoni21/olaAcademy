@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ola Academy Intership</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+
+    <script>
+        function handleSubmit(){
+
+            formValid=false;
+            errorCount=0;
+            errorLable="";
+            var elements = document.getElementById("contactUsForm").elements;
+            var obj ={};
+            for(var i = 0 ; i < elements.length ; i++){
+                if(elements[i].name!="submitButton"){
+                    if(focusout(elements[i].id)){
+                            formValid=false;
+                            errorLable=errorLable+elements[i].name + " "
+                            errorCount++;
+                    }else{
+                        obj[elements[i].name]=elements[i].value
+                    }
+                }
+            }
+            if(errorCount>0){
+                if(errorCount===1){
+                    alert("There is one error in "+errorLable+"field.")
+                }
+                else{
+                    alert("There is multiple error in "+errorLable+"fields.")
+                }
+            }else{
+                formValid=true;
+            }
+            if(formValid){
+                console.log("form",JSON.stringify(obj));
+                var localData=localStorage.getItem('contactUsFormData');
+                if(localData && localData.length>0){
+                    // var tempData=JSON.parse(localData);
+                    // tempData.p
+                    var existingData=JSON.parse(localData);
+                    
+                    existingData.push(obj);
+                    localStorage.setItem('contactUsFormData',JSON.stringify(existingData));
+
+                }else{
+                    var tempObj=[];
+                    tempObj.push(obj);
+                    localStorage.setItem('contactUsFormData',JSON.stringify(tempObj));
+                }
+                alert("Form is submitted successfully.")
+                for(var i = 0 ; i < elements.length ; i++){
+                if(elements[i].name!="submitButton"){
+                   elements[i].value="";
+                }
+            }
+            }
+        }
+
+        function focusout(value){
+            switch (value) {
+                case 'emailId':
+                var email=document.getElementById("emailId").validity.valid && document.getElementById("emailId").value.length>0;
+                if(!email){
+                    document.getElementById("emailError").innerHTML="Please enter a valid email id."
+                    return true;
+                }
+                return false
+                    break;
+            
+                    case 'userName':
+                        var name=document.getElementById("userName").value.length>0;
+                        if(!name){
+                            document.getElementById("nameError").innerHTML="Please enter your name."
+                            return true;
+                        }
+                        return false
+                    break;
+
+                    case 'subject':
+                        var sub=document.getElementById("subject").value.length>0;
+                            if(!sub){
+                            document.getElementById("subjectError").innerHTML="Please enter subject."
+                            return true;
+                        }
+                        return false
+                    break;
+
+                    case 'message':
+                        var msg=document.getElementById("message").value.length>0;
+                            if(!msg){
+                            document.getElementById("messageError").innerHTML="Please enter message."
+                            return true;
+                        }
+                        return false
+                    break;
+
+                    case 'query':
+                        var qry=document.getElementById("query").value.length>0;
+                            if(!qry){
+                            document.getElementById("queryError").innerHTML="Please enter query."
+                            return true;
+                        }
+                        return false
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+        function focusin(value){
+
+            switch (value) {
+                case 'emailId':
+                    document.getElementById("emailError").innerHTML=""
+                    break;
+
+                    case 'userName':
+                    document.getElementById("nameError").innerHTML=""
+                    break;
+
+                    case 'subject':
+                    document.getElementById("subjectError").innerHTML=""
+                    break;
+
+                    case 'message':
+                    document.getElementById("messageError").innerHTML=""
+                    break;
+
+                    case 'query':
+                    document.getElementById("queryError").innerHTML=""
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+        function viewData(){
+            document.getElementById('contactFormData').innerHTML="";
+            document.getElementById('contactFormDataTable').innerHTML="";
+            document.getElementById('formSection').setAttribute('class','hide');
+            document.getElementById('viewSection').setAttribute('class','show');
+            var localData=localStorage.getItem('contactUsFormData');
+            if(localData && localData.length>0){
+                document.getElementById('contactFormData').setAttribute('class','hide');
+                var existingData=JSON.parse(localData);
+                for(var i = 0 ; i < existingData.length ; i++){
+                    // document.getElementById('contactFormData').appendChild('ul')
+                    var element= document.getElementById('contactFormDataTable');
+                    var div1=document.createElement('div');
+                    div1.className="formSection";
+                   var nameField=document.createElement('span');
+                   nameField.innerHTML="Name"
+                   nameField.className="tableLabel"
+                   var nameFieldValue=document.createElement('span');
+                   nameFieldValue.innerHTML=existingData[i].name;
+                   div1.append(nameField,nameFieldValue);
+                   element.append(div1);
+                   
+                   
+                   var div2=document.createElement('div');
+                   div2.className="formSection";
+                   var emailField=document.createElement('span');
+                   emailField.innerHTML="Email"
+                   emailField.className="tableLabel"
+                   var emailFieldValue=document.createElement('span');
+                   emailFieldValue.innerHTML=existingData[i].email
+                   div2.append(emailField,emailFieldValue);
+                   element.append(div2);
+
+                   var div3=document.createElement('div');
+                   div3.className="formSection";
+                   var subjectField=document.createElement('span');
+                   subjectField.innerHTML="Subject"
+                   subjectField.className="tableLabel"
+                   var subjectFieldValue=document.createElement('span');
+                   subjectFieldValue.innerHTML=existingData[i].subject
+                   div3.append(subjectField,subjectFieldValue);
+                   element.append(div3);
+
+                   var div4=document.createElement('div');
+                   div4.className="formSection";
+                   var messageField=document.createElement('span');
+                   messageField.innerHTML="Message"
+                   messageField.className="tableLabel"
+                   var messageFieldValue=document.createElement('span');
+                   messageFieldValue.innerHTML=existingData[i].message
+                   div4.append(messageField,messageFieldValue);
+                   element.append(div4);
+
+                   var div5=document.createElement('div');
+                   div5.className="formSection";
+                   var queryField=document.createElement('span');
+                   queryField.innerHTML="Query"
+                   queryField.className="tableLabel"
+                   var queryFieldValue=document.createElement('span');
+                   queryFieldValue.innerHTML=existingData[i].query
+                   div5.append(queryField,queryFieldValue);
+                   element.append(div5);
+
+                   element.append(document.createElement('br'));
+                   element.append(document.createElement('hr'));
+                   element.append(document.createElement('br'));
+
+                }
+            }
+            else{
+                document.getElementById('contactFormData').innerHTML="There is no data store in database."
+            }
+            
+        }
+        function viewContactForm(){
+            document.getElementById('contactFormData').innerHTML="";
+            document.getElementById('contactFormDataTable').innerHTML="";
+            
+            document.getElementById('formSection').setAttribute('class','show');
+            document.getElementById('viewSection').setAttribute('class','hide');
+
+            
+        }
+    </script>
+
+
+</head>
+<body>
+    <div id="formSection">
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <h3>Contact Us</h3>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <form id="contactUsForm" >
+                <div class="form-group">
+                  <label for="emailId">Email address</label><span class="required">*</span>
+                  <input name="email" type="email" class="form-control" id="emailId" aria-describedby="emailHelp" placeholder="Please enter your email" onfocusout="focusout('emailId')" onfocus="focusin('emailId')">
+                  <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                  <small class="text-danger" id="emailError"></small>
+                </div>
+                <div class="form-group">
+                  <label for="userName">Name</label><span class="required">*</span>
+                  <input name="name" type="text" class="form-control" id="userName" placeholder="Please enter your name" onfocusout="focusout('userName')" onfocus="focusin('userName')">
+                  <small class="text-danger" id="nameError"></small>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label><span class="required">*</span>
+                    <input name="subject" type="text" class="form-control" id="subject" placeholder="Please enter the subject" onfocusout="focusout('subject')" onfocus="focusin('subject')">
+                    <small class="text-danger" id="subjectError"></small>  
+                </div>
+                  <div class="form-group">
+                    <label for="message">Message</label><span class="required">*</span>
+                    <textarea name="message" type="text" class="form-control" id="message" placeholder="Enter your message" onfocusout="focusout('message')" onfocus="focusin('message')"></textarea>
+                    <small class="text-danger" id="messageError"></small>  
+                </div>
+                  <div class="form-group">
+                    <label for="query">Query</label><span class="required">*</span>
+                    <textarea name="query" type="text" class="form-control" id="query" placeholder="Enter your Query" onfocusout="focusout('query')" onfocus="focusin('query')"></textarea>
+                    <small class="text-danger" id="queryError"></small>  
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button  name="submitButton" type="button" class="btn btn-primary" onclick="handleSubmit()">Submit</button>
+                    <button  name="submitButton" type="button" class="btn btn-info" onclick="viewData()">View Previous Submitted Data</button>
+                </div>
+
+              </form>
+        </div>
+
+    </div>
+</div>
+<div id="viewSection" class="hide">
+    <div class="container">
+        
+        <div class="row justify-content-flex-start">
+            <button  name="submitButton" type="button" class="btn btn-info mt-5" onclick="viewContactForm()">Back To Contact Us Form</button>
+        </div>
+        <div >
+            <div id="contactFormData" class="d-flex flex-row justify-content-center align-items-center" style="height: 500px;"></div>
+            <div id="contactFormDataTable" class="flex-row mt-5"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
